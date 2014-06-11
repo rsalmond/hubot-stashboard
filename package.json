@@ -1,25 +1,29 @@
 {
   "name": "hubot-stashboard",
-  "description": "A hubot script that does the things",
-  "version": "0.0.0",
-  "author": "Dan Riti <dmriti@gmail.com>",
+  "description": "A Hubot script to read and write status messages on Stashboard.",
+  "version": "0.1.0",
+  "author": "Rob Salmond <rsalmond@gmail.com>",
   "license": "MIT",
-
-  "keywords": ["hubot","hubot-scripts"],
-
+  "keywords": [
+    "hubot",
+    "hubot-scripts",
+    "stashboard",
+    "status",
+    "message"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/hubot-scripts/hubot-stashboard.git"
   },
-
   "bugs": {
     "url": "https://github.com/hubot-scripts/hubot-stashboard/issues"
   },
-
   "dependencies": {
-    "coffee-script": "~1.6"
+    "coffee-script": "~1.6",
+    "oauth-lite": "~0.1.1",
+    "url": "~0.10.1",
+    "request": "~2.36.0"
   },
-
   "devDependencies": {
     "mocha": "*",
     "chai": "*",
@@ -30,9 +34,7 @@
     "matchdep": "~0.1.2",
     "grunt-contrib-watch": "~0.5.3"
   },
-
   "main": "index.coffee",
-
   "scripts": {
     "test": "grunt test"
   }
