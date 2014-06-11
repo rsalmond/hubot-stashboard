@@ -2,7 +2,7 @@
   "name": "hubot-stashboard",
   "description": "A Hubot script to read and write status messages on Stashboard.",
   "version": "0.1.0",
-  "author": "Rob Salmond <rsalmond@gmail.com>",
+  "author": "Rob Salmond <rob@salmond.ca>",
   "license": "MIT",
   "keywords": [
     "hubot",
