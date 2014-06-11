@@ -48,12 +48,13 @@ class Stashbot
 
             status = JSON.parse response
             for service in status.services
-                service_msg = service.name + ' '
+                serviceMsg = ''
                 switch service['current-event'].status.id
-                    when 'down' then service_msg += @statusDown
-                    when 'up' then  service_msg += @statusUp
-                    when 'warn' then service_msg += @statusWarn
-                cb(null, service_msg)
+                    when 'down' then serviceMsg += @statusDown
+                    when 'up' then serviceMsg += @statusUp
+                    when 'warn' then serviceMsg += @statusWarn
+                serviceMsg += ' ' + service.name
+                cb(null, serviceMsg)
 
     set_status: (search_string, status, message, cb) ->
         found = false
