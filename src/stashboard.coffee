@@ -23,12 +23,9 @@ request = require 'request'
 
 class Stashbot
     #hipchat icons, customize away
-    status_up: ['(awyeah)', '(content)', '(freddie)', '(fuckyeah)', '(goodnews)', '(thumbsup)', '(successful)', '(success)',
-    '(yey)']
-    status_down: ['(boom)', '(cerealspit)', '(jackie)', '(ohcrap)', '(omg)', '(poo)', '(rageguy)', '(thumbsdown)', '(tableflip)',
-    '(wtf)']
-    status_warn:  ['(dumb)', '(derp)', '(embarassed)', '(facepalm)', '(grumpycat)', '(okay)', '(oops)', '(pokerface)', '(sadpanda)',
-     '(shrug)', '(sadtroll)', '(wat)']
+    statusUp: '(successful)'
+    statusDown: '(failed)'
+    statusWarn: '(unknown)'
 
     constructor: (@robot, cb) ->
         if process.env.HUBOT_STASHBOARD_URL? and process.env.HUBOT_STASHBOARD_TOKEN? and process.env.HUBOT_STASHBOARD_SECRET?
@@ -53,9 +50,9 @@ class Stashbot
             for service in status.services
                 service_msg = service.name + ' '
                 switch service['current-event'].status.id
-                    when 'down' then service_msg += @status_down[Math.floor(Math.random() * @status_down.length)]
-                    when 'up' then  service_msg += @status_up[Math.floor(Math.random() * @status_up.length)]
-                    when 'warn' then service_msg += @status_warn[Math.floor(Math.random() * @status_warn.length)]
+                    when 'down' then service_msg += @statusDown
+                    when 'up' then  service_msg += @statusUp
+                    when 'warn' then service_msg += @statusWarn
                 cb(null, service_msg)
 
     set_status: (search_string, status, message, cb) ->
