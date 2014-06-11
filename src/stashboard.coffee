@@ -70,7 +70,9 @@ class Stashbot
                             options.url = options
                             options.method = 'POST'
                             headers = 'Authorization': oauth.makeAuthorizationHeader(@state, options)
-                            request.post url: options.url, form: form, headers: headers, (error, data, response) =>
+                            request.post url: options.url, form: form, headers: headers, (error, response, body) =>
+                                if response.statusCode != 200
+                                    return cb('Setting service failed! ' + response.statusCode + ' ' + response.body)
                                 return cb('Okay, service ' + service.name + ' marked as ' + status + ' due to ' + message)
                 unless found
                     cb('Unable to find service service called: ' + search_string)
