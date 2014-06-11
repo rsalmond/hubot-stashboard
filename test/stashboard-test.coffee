@@ -12,8 +12,8 @@ describe 'stashboard', ->
 
     require('../src/stashboard')(@robot)
 
-  it 'registers a respond listener', ->
-    expect(@robot.respond).to.have.been.calledWith(/hello/)
+  it 'registers a stashboard status listener', ->
+    expect(@robot.respond).to.have.been.calledWith(/stashboard (status|sup|\?)/i)
 
-  it 'registers a hear listener', ->
-    expect(@robot.hear).to.have.been.calledWith(/orly/)
+  it 'registers a stashboard set listener', ->
+    expect(@robot.respond).to.have.been.calledWith(/stashboard set (.*?) (.*?) (.*)/i)
