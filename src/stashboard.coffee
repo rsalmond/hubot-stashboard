@@ -57,8 +57,9 @@ class Stashbot
         cb(null, serviceMsg)
 
   setStatus: (search_string, status, message, cb) ->
+    self = this
     found = false
-    request.get @baseUrl + "/services", (error, data, response) ->
+    request.get self.baseUrl + "/services", (error, data, response) ->
       if response?
         services = JSON.parse response
         for service in services['services']
@@ -66,10 +67,10 @@ class Stashbot
             if (service.id.search search_string.toLowerCase()) > -1
               found = true
               form = status: status, message: message
-              options = urllib.parse(@baseUrl + '/services/' + service.id + '/events')
+              options = urllib.parse(self.baseUrl + '/services/' + service.id + '/events')
               options.url = options
               options.method = 'POST'
-              headers = 'Authorization': oauth.makeAuthorizationHeader(@state, options)
+              headers = 'Authorization': oauth.makeAuthorizationHeader(self.state, options)
               request.post url: options.url, form: form, headers: headers, (error, response, body) ->
                 if response.statusCode != 200
                   return cb('Setting service failed! ' + response.statusCode + ' ' + response.body)
