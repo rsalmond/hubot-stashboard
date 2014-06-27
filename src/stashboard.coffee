@@ -30,66 +30,66 @@ class Stashbot
   constructor: (@robot, cb) ->
     if process.env.HUBOT_STASHBOARD_URL? and process.env.HUBOT_STASHBOARD_TOKEN? and process.env.HUBOT_STASHBOARD_SECRET?
       @state =
-        oauthConsumerKey: 'anonymous'
-        oauthConsumerSecret: 'anonymous'
-        oauthToken: process.env.HUBOT_STASHBOARD_TOKEN
-        oauthTokenSecret: process.env.HUBOT_STASHBOARD_SECRET
-        @baseUrl = process.env.HUBOT_STASHBOARD_URL
+        oauth_consumer_key: 'anonymous'
+        oauth_consumer_secret: 'anonymous'
+        oauth_token: process.env.HUBOT_STASHBOARD_TOKEN
+        oauth_token_secret: process.env.HUBOT_STASHBOARD_SECRET
+      @baseUrl = process.env.HUBOT_STASHBOARD_URL
     else
       cb 'Please set environment variables.'
 
-    getStatusAll: (cb) ->
-      request.get @baseUrl + '/services', (error, data, response) =>
-        if err?
-          return cb('Unable to retrieve status. ERROR: ' + err)
+  getStatusAll: (cb) ->
+    request.get @baseUrl + '/services', (error, data, response) =>
+      if err?
+        return cb('Unable to retrieve status. ERROR: ' + err)
 
-        if data.statusCode != 200
-          return cb('Unable to retrieve status. HTTP: ' + data.statusCode)
+      if data.statusCode != 200
+        return cb('Unable to retrieve status. HTTP: ' + data.statusCode)
 
-        status = JSON.parse response
-        for service in status.services
-          serviceMsg = ''
-          switch service['current-event'].status.id
-            when 'down' then serviceMsg += @statusDown
-            when 'up' then serviceMsg += @statusUp
-            when 'warn' then serviceMsg += @statusWarn
-              serviceMsg += ' ' + service.name
-              cb(null, serviceMsg)
+      status = JSON.parse response
+      for service in status.services
+        serviceMsg = ''
+        switch service['current-event'].status.id
+          when 'down' then serviceMsg += @statusDown
+          when 'up' then serviceMsg += @statusUp
+          when 'warn' then serviceMsg += @statusWarn
+        serviceMsg += ' ' + service.name
+        cb(null, serviceMsg)
 
-    setStatus: (search_string, status, message, cb) ->
-      found = false
-      request.get @baseUrl + "/services", (error, data, response) =>
-        if response?
-          services = JSON.parse response
-          for service in services['services']
-            do (service) =>
-              if (service.id.search search_string.toLowerCase()) > -1
-                found = true
-                form = status: status, message: message
-                options = urllib.parse(@baseUrl + '/services/' + service.id + '/events')
-                options.url = options
-                options.method = 'POST'
-                headers = 'Authorization': oauth.makeAuthorizationHeader(@state, options)
-                request.post url: options.url, form: form, headers: headers, (error, response, body) =>
-                  if response.statusCode != 200
-                    return cb('Setting service failed! ' + response.statusCode + ' ' + response.body)
-                  return cb('Okay, service ' + service.name + ' marked as ' + status + ' due to ' + message)
-                unless found
-                  cb('Unable to find service service called: ' + search_string)
+  setStatus: (search_string, status, message, cb) ->
+    found = false
+    request.get @baseUrl + "/services", (error, data, response) ->
+      if response?
+        services = JSON.parse response
+        for service in services['services']
+          do (service) =>
+            if (service.id.search search_string.toLowerCase()) > -1
+              found = true
+              form = status: status, message: message
+              options = urllib.parse(@baseUrl + '/services/' + service.id + '/events')
+              options.url = options
+              options.method = 'POST'
+              headers = 'Authorization': oauth.makeAuthorizationHeader(@state, options)
+              request.post url: options.url, form: form, headers: headers, (error, response, body) ->
+                if response.statusCode != 200
+                  return cb('Setting service failed! ' + response.statusCode + ' ' + response.body)
+                return cb('Okay, service ' + service.name + ' marked as ' + status + ' due to ' + message)
+        unless found
+          cb('Unable to find service service called: ' + search_string)
 
 module.exports = (robot) ->
 
-    stashbot = new Stashbot robot, (err) ->
-      robot.send null, 'Stashbot init error: ' + err
+  stashbot = new Stashbot robot, (err) ->
+    robot.send null, 'Stashbot init error: ' + err
 
-    robot.respond /stashboard (status|sup|\?)/i, (msg) =>
-      msg.send 'Checking stashboard status ...'
-      stashbot.getStatusAll (err, status_msg) ->
-        unless err?
-          msg.send status_msg
-        else
-          msg.send err
+  robot.respond /stashboard (status|sup|\?)/i, (msg) ->
+    msg.send 'Checking stashboard status ...'
+    stashbot.getStatusAll (err, status_msg) ->
+      unless err?
+        msg.send status_msg
+      else
+        msg.send err
 
-    robot.respond /stashboard set (.*?) (.*?) (.*)/i, (msg) =>
-      stashbot.setStatus msg.match[1], msg.match[2], msg.match[3], (data) ->
-        msg.send data
+  robot.respond /stashboard set (.*?) (.*?) (.*)/i, (msg) ->
+    stashbot.setStatus msg.match[1], msg.match[2], msg.match[3], (data) ->
+      msg.send data
