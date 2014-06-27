@@ -30,16 +30,16 @@ class Stashbot
   constructor: (@robot, cb) ->
     if process.env.HUBOT_STASHBOARD_URL? and process.env.HUBOT_STASHBOARD_TOKEN? and process.env.HUBOT_STASHBOARD_SECRET?
       @state =
-        oauth_consumer_key: 'anonymous'
-        oauth_consumer_secret: 'anonymous'
-        oauth_token: process.env.HUBOT_STASHBOARD_TOKEN
-        oauth_token_secret: process.env.HUBOT_STASHBOARD_SECRET
-        @base_url = process.env.HUBOT_STASHBOARD_URL
+        oauthConsumerKey: 'anonymous'
+        oauthConsumerSecret: 'anonymous'
+        oauthToken: process.env.HUBOT_STASHBOARD_TOKEN
+        oauthTokenSecret: process.env.HUBOT_STASHBOARD_SECRET
+        @baseUrl = process.env.HUBOT_STASHBOARD_URL
     else
       cb 'Please set environment variables.'
 
-    get_status_all: (cb) ->
-      request.get @base_url + '/services', (error, data, response) =>
+    getStatusAll: (cb) ->
+      request.get @baseUrl + '/services', (error, data, response) =>
         if err?
           return cb('Unable to retrieve status. ERROR: ' + err)
 
@@ -56,9 +56,9 @@ class Stashbot
               serviceMsg += ' ' + service.name
               cb(null, serviceMsg)
 
-    set_status: (search_string, status, message, cb) ->
+    setStatus: (search_string, status, message, cb) ->
       found = false
-      request.get @base_url + "/services", (error, data, response) =>
+      request.get @baseUrl + "/services", (error, data, response) =>
         if response?
           services = JSON.parse response
           for service in services['services']
@@ -66,7 +66,7 @@ class Stashbot
               if (service.id.search search_string.toLowerCase()) > -1
                 found = true
                 form = status: status, message: message
-                options = urllib.parse(@base_url + '/services/' + service.id + '/events')
+                options = urllib.parse(@baseUrl + '/services/' + service.id + '/events')
                 options.url = options
                 options.method = 'POST'
                 headers = 'Authorization': oauth.makeAuthorizationHeader(@state, options)
@@ -84,12 +84,12 @@ module.exports = (robot) ->
 
     robot.respond /stashboard (status|sup|\?)/i, (msg) =>
       msg.send 'Checking stashboard status ...'
-      stashbot.get_status_all (err, status_msg) ->
+      stashbot.getStatusAll (err, status_msg) ->
         unless err?
           msg.send status_msg
         else
           msg.send err
 
     robot.respond /stashboard set (.*?) (.*?) (.*)/i, (msg) =>
-      stashbot.set_status msg.match[1], msg.match[2], msg.match[3], (data) ->
+      stashbot.setStatus msg.match[1], msg.match[2], msg.match[3], (data) ->
         msg.send data
