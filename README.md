@@ -21,6 +21,7 @@ Then add **hubot-stashboard** to your `external-scripts.json`:
 ## Sample Interaction
 
 ```
-user1>> hubot stashboard sup
-hubot>> Production (successful)
+user1>> hubot stashboard sup?
+hubot>> (successful) Website
+hubot>> (successful) API
 ```
