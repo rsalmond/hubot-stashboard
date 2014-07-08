@@ -85,7 +85,7 @@ module.exports = (robot) ->
   stashbot = new Stashbot robot, (err) ->
     robot.send null, 'Stashbot init error: ' + err
 
-  robot.respond /stashboard (status|sup|\?)/i, (msg) ->
+  robot.respond /stashboard (status|sup\?*|\?)/i, (msg) ->
     msg.send 'Checking stashboard status ...'
     stashbot.getStatusAll (err, status_msg) ->
       unless err?
