@@ -49,10 +49,12 @@ class Stashbot
       status = JSON.parse response
       for service in status.services
         serviceMsg = ''
-        switch service['current-event'].status.id
+        status = service['current-event'].status.id
+        switch status
           when 'down' then serviceMsg += @statusDown
           when 'up' then serviceMsg += @statusUp
-          when 'warn' then serviceMsg += @statusWarn
+          when 'warning' then serviceMsg += @statusWarn
+          else serviceMsg += status
         serviceMsg += ' ' + service.name
         cb(null, serviceMsg)
 
