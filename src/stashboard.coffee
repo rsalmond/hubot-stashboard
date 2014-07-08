@@ -63,7 +63,7 @@ class Stashbot
       if response?
         services = JSON.parse response
         for service in services['services']
-          do (service) =>
+          do (service) ->
             if (service.id.search search_string.toLowerCase()) > -1
               found = true
               form = status: status, message: message
