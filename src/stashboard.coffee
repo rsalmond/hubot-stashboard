@@ -70,9 +70,9 @@ class Stashbot
               found = true
               form = status: status, message: message
               options = urllib.parse(self.baseUrl + '/services/' + service.id + '/events')
-              options.url = options
+              options.url = options.href
               options.method = 'POST'
-              headers = 'Authorization': oauth.makeAuthorizationHeader(self.state, options)
+              headers = 'Authorization': oauth.makeAuthorizationHeader self.state, options, form
               request.post url: options.url, form: form, headers: headers, (error, response, body) ->
                 if response.statusCode != 200
                   return cb('Setting service failed! ' + response.statusCode + ' ' + response.body)
